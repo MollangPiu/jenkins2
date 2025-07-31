@@ -2,11 +2,9 @@ pipeline {
     agent any
 
     environment {
-        HOST_IP = "192.168.56.1"
-        HOST_USER = "hayar"
         SPRING_CONTAINER = "springboot_app"
-        JAR_PATH_LOCAL = "build/libs/app.jar"
-        JAR_PATH_REMOTE = "/app/app.jar"
+        JAR_SOURCE = "build/libs/study-0.0.1-SNAPSHOT.jar"
+        JAR_TARGET = "/shared/study-0.0.1-SNAPSHOT.jar"  // 공유된 호스트 폴더 경로
     }
 
     stages {
@@ -27,14 +25,11 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy (Copy to Shared)') {
             steps {
                 sh '''
-                    echo "📤 JAR 복사 중..."
-                    scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/app.jar hayar@192.168.56.1:"C:/Users/hayar/app/app.jar"
-
-                    echo "🔁 컨테이너 재시작 중..."
-                    ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no hayar@192.168.56.1 "docker restart springboot_app"
+                    echo "📤 빌드된 JAR 복사 중..."
+                    cp ${JAR_SOURCE} ${JAR_TARGET}
                 '''
             }
         }
