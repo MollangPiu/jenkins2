@@ -18,6 +18,7 @@ pipeline {
 
         stage('Build') {
             steps {
+                chmod +x ./gradlew     # 👈 실행 권한 부여
                 sh './gradlew clean build'
             }
         }
