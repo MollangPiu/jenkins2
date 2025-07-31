@@ -3,23 +3,25 @@ pipeline {
 
     environment {
         SPRING_CONTAINER = "springboot_app"
-        JAR_PATH = "build/libs/app.jar"         // 빌드 결과 JAR
-        CONTAINER_JAR_PATH = "/app/app.jar"     // 컨테이너 내 JAR 위치
+        JAR_PATH = "build/libs/app.jar"
+        CONTAINER_JAR_PATH = "/app/app.jar"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git credentialsId: 'MHS',
-                    url: 'https://github.com/MollangPiu/jenkins.git',
+                    url: 'https://github.com/MollangPiu/jenkins2.git',
                     branch: 'main'
             }
         }
 
         stage('Build') {
             steps {
-                chmod +x ./gradlew     # 👈 실행 권한 부여
-                sh './gradlew clean build'
+                sh '''
+                    chmod +x ./gradlew
+                    ./gradlew clean build
+                '''
             }
         }
 
