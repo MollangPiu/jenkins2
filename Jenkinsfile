@@ -2,9 +2,11 @@ pipeline {
     agent any
 
     environment {
+        HOST_IP = "192.168.56.1"
+        HOST_USER = "hayar"
         SPRING_CONTAINER = "springboot_app"
-        JAR_PATH = "build/libs/app.jar"
-        CONTAINER_JAR_PATH = "/app/app.jar"
+        JAR_PATH_LOCAL = "build/libs/app.jar"
+        JAR_PATH_REMOTE = "/app/app.jar"
     }
 
     stages {
@@ -28,14 +30,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    echo "Stopping old container..."
-                    docker stop ${SPRING_CONTAINER} || true
+                    echo "📤 JAR 파일 복사 중..."
+                    scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${JAR_PATH_LOCAL} ${HOST_USER}@${HOST_IP}:${JAR_PATH_REMOTE}
 
-                    echo "Copying new JAR into container..."
-                    docker cp ${JAR_PATH} ${SPRING_CONTAINER}:${CONTAINER_JAR_PATH}
-
-                    echo "Restarting container..."
-                    docker start ${SPRING_CONTAINER}
+                    echo "🔁 컨테이너 재시작 중..."
+                    ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${HOST_USER}@${HOST_IP} "docker restart ${SPRING_CONTAINER}"
                 '''
             }
         }
