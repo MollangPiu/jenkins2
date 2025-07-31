@@ -25,11 +25,10 @@ pipeline {
             }
         }
 
-        stage('Deploy (Copy to Shared)') {
+        stage('Deploy') {
             steps {
                 sh '''
-                    echo "📤 빌드된 JAR 복사 중..."
-                    cp ${JAR_SOURCE} ${JAR_TARGET}
+                    cp build/libs/study-0.0.1-SNAPSHOT.jar /shared/study-0.0.1-SNAPSHOT.jar
                 '''
             }
         }
