@@ -30,11 +30,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    echo "📤 JAR 파일 복사 중..."
-                    scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${JAR_PATH_LOCAL} ${HOST_USER}@${HOST_IP}:${JAR_PATH_REMOTE}
+                    echo "📤 JAR 복사 중..."
+                    scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no build/libs/app.jar hayar@192.168.56.1:"C:/Users/hayar/app/app.jar"
 
                     echo "🔁 컨테이너 재시작 중..."
-                    ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${HOST_USER}@${HOST_IP} "docker restart ${SPRING_CONTAINER}"
+                    ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no hayar@192.168.56.1 "docker restart springboot_app"
                 '''
             }
         }
